@@ -1,0 +1,90 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "hosting": [
+    {
+      "target": "main",
+      "public": "web-form",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "/api/intake",
+          "run": {
+            "serviceId": "intakepublic",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/api/pmSearch",
+          "run": {
+            "serviceId": "pmsearchpublic",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/api/clockIn",
+          "run": {
+            "serviceId": "clockinpublic",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/clock-in",
+          "destination": "/clock-in.html"
+        },
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "app",
+      "public": "build/web",
+      "headers": [
+        {
+          "source": "flutter_bootstrap.js",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache, no-store, must-revalidate"
+            }
+          ]
+        }
+      ],
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix functions run build"
+      ]
+    }
+  ]
+}

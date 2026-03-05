@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // PMs collection - authenticated users from immediateresponsehvac.ca domain can read/write
+    match /pms/{pmId} {
+      allow read, write: if request.auth != null && 
+        request.auth.token.email.matches('.*@immediateresponsehvac[.]ca$');
+    }
+
+    // Leads collection - company domain can read, server-side writes only (Admin SDK)
+    match /leads/{leadId} {
+      allow read: if request.auth != null && 
+        request.auth.token.email.matches('.*@immediateresponsehvac[.]ca$');
+      allow write: if false; // Only written by Cloud Functions via Admin SDK
+    }
+
+    // QBO tokens - no client access, server-side only (Admin SDK)
+    match /qbo_tokens/{doc} {
+      allow read, write: if false;
+    }
+    
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

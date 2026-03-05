@@ -1,0 +1,20 @@
+Brand,Fault Code,Symptom,Likely Culprit,Canadian Context Tip,Severity
+Carrier,31,No Heat / Inducer runs,Pressure switch stuck open,Check for ice/snow blockage in the outdoor PVC vent pipes.,High
+Carrier,33,System cycles / No Heat,Limit switch open (Overheating),Often a dirty 16x25x1 filter or a blocked return air grill.,Medium
+Lennox,1 Flash,Ignition Failure,Failed ignitor or gas valve,Common in high-humidity basements; check for moisture on the control board.,High
+Lennox,3 Flashes,Inducer on / No ignition,Pressure switch stuck open,Inspect pressure switch tubing for condensation/water buildup.,Medium
+Lennox,E228,Blower Motor Issue,Excessive motor torque,Check for physical obstructions or failed bearings in the blower assembly.,High
+York,3 Red Flashes,Pressure switch error,Stuck in open position,York switches are sensitive to 'flutter' during high Ontario wind storms.,Medium
+York,4 Red Flashes,Limit switch open,Overheating / Low Airflow,Check for a cracked primary heat exchanger (common in older Diamond units).,High
+Goodman,1 Blink,Ignition failure / Lockout,Failed to ignite after 3 tries,Clean the flame sensor with a light abrasive pad.,Medium
+Goodman,3 Blinks,Inducer running,Open pressure switch,Check for bird nests or debris in the exhaust termination.,Medium
+Napoleon,1 Flash,Ignition Failure,Ignitor not glowing or no gas,Verify the 24V signal to the gas valve during the startup sequence.,High
+Napoleon,2 Flashes,Pressure Switch Error,Airflow restriction,Napoleon units often trigger this if the condensate trap is plugged.,Medium
+Trane,2 Flashes,Ignition failure,System failed to prove flame,"In extreme cold (-25C), check if the gas meter regulator is freezing up.",High
+Trane,3 Flashes,Pressure switch problem,Blocked vent or clogged drain,Check for an 'Ice Plug' in the high-efficiency vent pipes outside.,Medium
+Trane,9 Flashes,Pressure switch (Stuck Closed),Switch closed before inducer start,Often caused by moisture trapped in the pressure switch tubing.,Medium
+Keeprite,2 Flashes,Pressure switch stuck closed,Switch failed to open at start,Check for a short in the wiring harness or a failed board relay.,Medium
+Keeprite,3 Flashes,Pressure switch won't close,Inducer running but no pressure,Keeprite 'Water Logging' is common; clear the condensate trap/hoses.,Medium
+Keeprite,Status 4+2,Inducer Motor Fault,Inducer not reaching RPM,Bearings may be seized due to acidic condensate backup.,High
+All,A2L Sensor Trip,System Shut Down,Refrigerant leak detected (2025+),"If R-454B sensor trips, ventilate area immediately and check evap coil.",Critical
+All,Water Leak,Water on floor,Clogged condensate drain,Winter: Check for frozen drain line. Summer: Algae in trap.,Medium

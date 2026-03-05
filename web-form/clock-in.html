@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clock In - Immediate Response HVAC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #ffffff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 480px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding-top: 20px;
+    }
+
+    /* Header / Logo */
+    .header {
+      text-align: center;
+    }
+    .header-logo {
+      max-width: 200px;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 8px;
+    }
+
+    /* Address card */
+    .address-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 20px;
+      width: 100%;
+      text-align: center;
+    }
+    .address-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .address-text {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    /* Clock-In button */
+    .clock-in-btn {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: #DC2626;
+      color: #ffffff;
+      border: none;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      box-shadow: 0 0 40px rgba(220, 38, 38, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      margin: 16px 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .clock-in-btn:hover:not(:disabled) {
+      transform: scale(1.04);
+      box-shadow: 0 0 60px rgba(220, 38, 38, 0.5);
+    }
+    .clock-in-btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+    .clock-in-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Status / loading */
+    .status {
+      text-align: center;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .status-text {
+      font-size: 15px;
+      color: #999;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #333;
+      border-top-color: #DC2626;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Result messages */
+    .result {
+      display: none;
+      width: 100%;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+    .result.visible { display: block; }
+
+    .result-success {
+      background: #052e16;
+      border: 1px solid #166534;
+    }
+    .result-success .result-icon { font-size: 48px; margin-bottom: 12px; }
+    .result-success .result-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 6px;
+    }
+    .result-success .result-detail { color: #86efac; font-size: 14px; }
+
+    .result-error {
+      background: #2a0a0a;
+      border: 1px solid #7f1d1d;
+    }
+    .result-error .result-icon { font-size: 48px; margin-bottom: 12px; }
+    .result-error .result-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f87171;
+      margin-bottom: 6px;
+    }
+    .result-error .result-detail { color: #fca5a5; font-size: 14px; }
+
+    .retry-btn {
+      margin-top: 16px;
+      padding: 12px 32px;
+      background: #DC2626;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .retry-btn:hover { background: #b91c1c; }
+
+    /* No-address error */
+    .no-address {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .no-address h2 {
+      color: #f87171;
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+    .no-address p { color: #999; font-size: 14px; }
+
+    /* GPS permission hint */
+    .gps-hint {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      max-width: 280px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="Immediateresponselogo.jpg" alt="Immediate Response HVAC" class="header-logo">
+    </div>
+
+    <!-- No-address fallback -->
+    <div class="no-address" id="noAddress" style="display:none;">
+      <h2>Missing Address</h2>
+      <p>This clock-in link appears to be invalid.<br>Please use the link from your calendar event.</p>
+    </div>
+
+    <!-- Main clock-in UI -->
+    <div id="mainUI" style="display:none; width:100%; display:flex; flex-direction:column; align-items:center; gap:24px;">
+      <div class="address-card">
+        <div class="address-label">Job Site</div>
+        <div class="address-text" id="addressDisplay"></div>
+      </div>
+
+      <button class="clock-in-btn" id="clockInBtn">CLOCK IN</button>
+
+      <p class="gps-hint">Your GPS location will be used to verify you are on site.</p>
+
+      <div class="status" id="statusArea" style="display:none;">
+        <div class="spinner" id="spinner"></div>
+        <div class="status-text" id="statusText">Locating you…</div>
+      </div>
+
+      <!-- Success -->
+      <div class="result result-success" id="successResult">
+        <div class="result-icon">✅</div>
+        <div class="result-title">Clocked In</div>
+        <div class="result-detail" id="successDetail">You are on site. Have a great job!</div>
+      </div>
+
+      <!-- Error -->
+      <div class="result result-error" id="errorResult">
+        <div class="result-icon">🚫</div>
+        <div class="result-title" id="errorTitle">Too Far</div>
+        <div class="result-detail" id="errorDetail"></div>
+        <button class="retry-btn" id="retryBtn">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Parse address from URL ──────────────────────────────
+    const params = new URLSearchParams(window.location.search);
+    const jobAddress = params.get('address');
+
+    const noAddressEl  = document.getElementById('noAddress');
+    const mainUI       = document.getElementById('mainUI');
+    const addressDisplay = document.getElementById('addressDisplay');
+    const clockInBtn   = document.getElementById('clockInBtn');
+    const statusArea   = document.getElementById('statusArea');
+    const spinnerEl    = document.getElementById('spinner');
+    const statusText   = document.getElementById('statusText');
+    const successResult = document.getElementById('successResult');
+    const successDetail = document.getElementById('successDetail');
+    const errorResult  = document.getElementById('errorResult');
+    const errorTitle   = document.getElementById('errorTitle');
+    const errorDetail  = document.getElementById('errorDetail');
+    const retryBtn     = document.getElementById('retryBtn');
+
+    if (!jobAddress) {
+      noAddressEl.style.display = 'block';
+      mainUI.style.display = 'none';
+    } else {
+      noAddressEl.style.display = 'none';
+      mainUI.style.display = 'flex';
+      addressDisplay.textContent = jobAddress;
+    }
+
+    // ── API endpoint ────────────────────────────────────────
+    // Use relative path so it works via Firebase Hosting rewrites
+    const CLOCK_IN_API = '/api/clockIn';
+
+    // ── State helpers ───────────────────────────────────────
+    function showStatus(msg) {
+      clockInBtn.disabled = true;
+      statusArea.style.display = 'flex';
+      statusText.textContent = msg;
+      successResult.classList.remove('visible');
+      errorResult.classList.remove('visible');
+    }
+
+    function hideStatus() {
+      statusArea.style.display = 'none';
+      clockInBtn.disabled = false;
+    }
+
+    function showSuccess(distanceMetres) {
+      statusArea.style.display = 'none';
+      clockInBtn.style.display = 'none';
+      successDetail.textContent =
+        `You are ${Math.round(distanceMetres)}m from the job site. Clocked in successfully!`;
+      successResult.classList.add('visible');
+    }
+
+    function showError(title, detail) {
+      statusArea.style.display = 'none';
+      clockInBtn.disabled = false;
+      errorTitle.textContent = title;
+      errorDetail.textContent = detail;
+      errorResult.classList.add('visible');
+    }
+
+    // ── Clock-in flow ───────────────────────────────────────
+    async function handleClockIn() {
+      // Reset previous results
+      successResult.classList.remove('visible');
+      errorResult.classList.remove('visible');
+
+      // 1. Get GPS
+      showStatus('Locating you\u2026');
+
+      let position;
+      try {
+        position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0,
+          });
+        });
+      } catch (geoErr) {
+        hideStatus();
+        if (geoErr.code === 1) {
+          showError('Location Denied', 'Please allow location access in your browser settings and try again.');
+        } else if (geoErr.code === 3) {
+          showError('Location Timeout', 'Could not determine your location. Make sure GPS is enabled and try again.');
+        } else {
+          showError('Location Error', 'Unable to get your location. Please try again.');
+        }
+        return;
+      }
+
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      // 2. Verify proximity with backend
+      showStatus('Verifying proximity\u2026');
+
+      try {
+        const res = await fetch(CLOCK_IN_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lat, lng, address: jobAddress }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          showError('Error', data.error || 'Server error — please try again.');
+          return;
+        }
+
+        if (data.withinRange) {
+          showSuccess(data.distanceMetres);
+        } else {
+          showError(
+            'Too Far',
+            `You are ${Math.round(data.distanceMetres)}m from the job site. You must be within ${data.thresholdMetres}m to clock in.`
+          );
+        }
+      } catch (fetchErr) {
+        hideStatus();
+        showError('Network Error', 'Could not reach the server. Check your connection and try again.');
+      }
+    }
+
+    clockInBtn.addEventListener('click', handleClockIn);
+    retryBtn.addEventListener('click', () => {
+      errorResult.classList.remove('visible');
+      handleClockIn();
+    });
+  </script>
+</body>
+</html>

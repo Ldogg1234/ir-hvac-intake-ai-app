@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "immediate-response-ai-b18b8"
+  },
+  "targets": {
+    "immediate-response-ai-b18b8": {
+      "hosting": {
+        "main": [
+          "immediate-response-ai-b18b8"
+        ],
+        "app": [
+          "imr-tech-report-b18b8"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Build output
+functions/lib/
+
+# Environment / secrets
+.env
+.env.local
+
+# Service account keys — NEVER commit
+service-account-key.json
+functions/service-account-key.json
+functions/gmail-key.json
+*.json.bak
+
+# Flutter
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+*.iml
+local.properties
