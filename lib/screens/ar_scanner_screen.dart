@@ -148,7 +148,7 @@ class _ARScannerScreenState extends State<ARScannerScreen> {
         children: [
           ARKitSceneView(
             onARKitViewCreated: onARKitViewCreated,
-            planeDetection: ARPlaneDetection.both, // Detect floors and walls
+            planeDetection: ARPlaneDetection.horizontalAndVertical, // Detect floors and walls
           ),
           
           // HUD for Spatial Metrics
