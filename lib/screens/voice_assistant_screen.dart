@@ -152,8 +152,11 @@ class _VoiceAssistantScreenState extends State<VoiceAssistantScreen> with Single
       
       String apiKey = const String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
       if (apiKey.isEmpty) {
-        // Fallback to test key if not provided via environment
-        apiKey = 'AIzaSyAaGzFJa9x7j8btqmprXe4kbi2CWyYgo3A';
+        setState(() {
+          _messages.add({'role': 'system', 'text': 'ERROR: GEMINI_API_KEY is not set. Please set it using --dart-define.'});
+        });
+        _scrollToBottom();
+        return;
       }
       
       final bridgeUrl = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=$apiKey';
