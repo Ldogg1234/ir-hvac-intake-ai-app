@@ -34,8 +34,76 @@
           }
         },
         {
+          "source": "/api/getTechCalendar",
+          "run": {
+            "serviceId": "gettechcalendar",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/api/searchJobByAddress",
+          "run": {
+            "serviceId": "searchjobbyaddress",
+            "region": "us-central1"
+          }
+        },
+        {
           "source": "/clock-in",
           "destination": "/clock-in.html"
+        },
+        {
+          "source": "/onboarding",
+          "destination": "/onboarding.html"
+        },
+        {
+          "source": "/admin-onboarding",
+          "destination": "/ops/admin-onboarding.html"
+        },
+        {
+          "source": "/api/submitOnboarding",
+          "run": {
+            "serviceId": "submitonboardinghttp",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/api/ops/update-lead",
+          "run": {
+            "serviceId": "updateleadops",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/api/ops/delete-lead",
+          "run": {
+            "serviceId": "deleteleadops",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/api/ops/retry-sync",
+          "run": {
+            "serviceId": "retryintake",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/api/ops/approve-report",
+          "run": {
+            "serviceId": "approvereport",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/api/ops/reply-email",
+          "run": {
+            "serviceId": "replytoemailhttp",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/po-workbench",
+          "destination": "/po-workbench.html"
         },
         {
           "source": "**",
@@ -68,13 +136,31 @@
           "destination": "/index.html"
         }
       ]
+    },
+    {
+      "target": "cash-flow",
+      "public": "web-form",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "/forensic-audit",
+          "destination": "/forensic-audit-form.html"
+        },
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
     }
   ],
   "functions": [
     {
       "source": "functions",
       "codebase": "default",
-      "disallowLegacyRuntimeConfig": true,
       "ignore": [
         "node_modules",
         ".git",
@@ -83,7 +169,7 @@
         "*.local"
       ],
       "predeploy": [
-        "npm --prefix functions run build"
+        "npm --prefix \"$RESOURCE_DIR\" run build"
       ]
     }
   ]

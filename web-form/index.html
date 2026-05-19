@@ -4,101 +4,187 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HVAC Lead Intake - Immediate Response HVAC</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
   <style>
+    :root {
+      /* Brand Colors */
+      --primary: #1e3a5f;     /* Immediate Response Logo Blue */
+      --primary-light: #2a4b75;
+      --primary-alpha: rgba(30, 58, 95, 0.05);
+      --secondary: #f4a261;
+      --secondary-hover: #e78c41;
+      
+      /* Semantic Colors */
+      --success: #10b981;
+      --success-light: rgba(16, 185, 129, 0.1);
+      --error: #ef4444;
+      --error-light: rgba(239, 68, 68, 0.1);
+      
+      /* Surface & Typography */
+      --bg: #f8fafc;
+      --surface: rgba(255, 255, 255, 0.85);
+      --surface-solid: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: rgba(226, 232, 240, 0.8);
+      
+      /* Effects */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.1);
+      --shadow-glow: 0 0 20px rgba(244, 162, 97, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #1e3a5f 0%, #0d1b2a 100%); min-height: 100vh; padding: 20px; color: #333; }
-    .container { max-width: 800px; margin: 0 auto; }
-    .header { text-align: center; margin-bottom: 30px; color: white; }
-    .header-logo { max-width: 250px; width: 100%; height: auto; margin: 0 auto 20px; display: block; border-radius: 8px; background: white; padding: 10px; }
-    .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-    .header p { opacity: 0.8; font-size: 14px; }
-    .form-card { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    /* Animated background elements for premium feel */
+    .bg-mesh {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -1;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(30,58,95,0.06) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(244,162,97,0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(30,58,95,0.04) 0px, transparent 50%);
+      pointer-events: none;
+    }
+
+    h1, h2, h3, h4, h5, h6, .brand-font { font-family: 'Outfit', sans-serif; }
+    
+    .container { max-width: 800px; margin: 0 auto; position: relative; animation: fadeUp 0.8s var(--ease-out) forwards; }
+    
+    .header { text-align: center; margin-bottom: 30px; }
+    .header-logo { max-width: 280px; width: 100%; height: auto; margin: 0 auto 20px; display: block; border-radius: var(--radius-sm);  }
+    .header h1 { font-size: 36px; font-weight: 700; color: var(--primary); margin-bottom: 8px; letter-spacing: -0.5px; }
+    .header p { color: var(--text-muted); font-size: 16px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;}
+    
+    .form-card { background: var(--surface-solid); border-radius: var(--radius-lg); padding: 48px; box-shadow: var(--shadow-lg); border: 1px solid var(--border); overflow: visible; position: relative; }
+    .form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg); background: linear-gradient(90deg, var(--primary), var(--primary-light)); }
+
     .auth-section { text-align: center; padding: 60px 20px; }
-    .auth-section h2 { color: #1e3a5f; margin-bottom: 16px; }
-    .auth-section p { color: #666; margin-bottom: 24px; }
-    .google-btn { display: inline-flex; align-items: center; gap: 12px; padding: 14px 28px; background: white; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-    .google-btn:hover { border-color: #1e3a5f; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .auth-section h2 { color: var(--primary); font-size: 28px; margin-bottom: 16px; }
+    .auth-section p { color: var(--text-muted); margin-bottom: 32px; font-size: 16px; }
+    
+    .google-btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 32px; background: white; border: 1px solid var(--border); border-radius: 100px; font-size: 16px; font-family: 'Outfit'; font-weight: 600; color: var(--text-main); cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); }
+    .google-btn:hover { background: #f8f9fa; border-color: #d1d5db; box-shadow: var(--shadow-md); transform: translateY(-1px); }
     .google-btn img { width: 24px; height: 24px; }
-    .user-info { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #f0f7ff; border-radius: 8px; margin-bottom: 24px; }
-    .user-info .user { display: flex; align-items: center; gap: 12px; }
-    .user-info img { width: 36px; height: 36px; border-radius: 50%; }
-    .user-info .name { font-weight: 500; color: #333; }
-    .user-info .email { font-size: 12px; color: #666; }
-    .sign-out-btn { padding: 8px 16px; background: none; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; cursor: pointer; color: #666; }
-    .sign-out-btn:hover { background: #f5f5f5; }
+    
+    .user-info { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 32px; }
+    .user-info .user { display: flex; align-items: center; gap: 16px; }
+    .user-info img { width: 44px; height: 44px; border-radius: 50%; box-shadow: var(--shadow-sm); }
+    .user-info .name { font-family: 'Outfit'; font-weight: 600; color: var(--primary); font-size: 16px; }
+    .user-info .email { font-size: 13px; color: var(--text-muted); }
+    
+    .sign-out-btn { padding: 8px 16px; background: white; border: 1px solid var(--border); border-radius: 100px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-muted); transition: all 0.2s; }
+    .sign-out-btn:hover { background: var(--bg); color: var(--error); border-color: var(--error-light); }
+    
     .hidden { display: none !important; }
-    .section { margin-bottom: 28px; }
-    .section-title { font-size: 16px; font-weight: 600; color: #1e3a5f; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #e8f4f8; display: flex; align-items: center; gap: 8px; }
-    .section-title::before { content: ''; width: 4px; height: 20px; background: #f4a261; border-radius: 2px; }
-    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
-    .form-group { display: flex; flex-direction: column; }
-    .section > .form-group { margin-bottom: 16px; }
+    .section { margin-bottom: 40px; }
+    .section-title { font-size: 22px; font-family: 'Outfit'; font-weight: 600; color: var(--primary); margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--bg); display: flex; align-items: center; gap: 10px; }
+    
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 20px; }
+    .form-group { display: flex; flex-direction: column; overflow: visible; position: relative; }
+    .section > .form-group { margin-bottom: 24px; }
     .section > .form-group:last-child { margin-bottom: 0; }
     .form-group.full-width { grid-column: 1 / -1; }
-    label { font-size: 13px; font-weight: 500; color: #555; margin-bottom: 6px; }
-    label .required { color: #e63946; }
-    input, select, textarea { padding: 12px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 15px; font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s; }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: #1e3a5f; box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1); }
-    input::placeholder, textarea::placeholder { color: #aaa; }
-    textarea { resize: vertical; min-height: 100px; }
-    select { background: white; cursor: pointer; }
-    .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
-    .checkbox-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
-    .checkbox-item:hover { background: #e8f4f8; }
-    .checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
-    .checkbox-item label { margin: 0; cursor: pointer; font-size: 13px; }
-    .pm-section { display: none; background: #f8f9fa; padding: 20px; border-radius: 12px; }
-    .pm-section.visible { display: block; }
-    .form-sections { display: flex; flex-direction: column; }
+    
+    label { font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    label .required { color: var(--error); font-weight: bold; }
+    
+    input, select, textarea { padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; font-family: inherit; background: var(--bg); color: var(--text-main); transition: all 0.2s; }
+    input:focus, select:focus, textarea:focus { outline: none; background: var(--surface-solid); border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-alpha); }
+    input::placeholder, textarea::placeholder { color: #94a3b8; }
+    textarea { resize: vertical; min-height: 120px; }
+    select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231e3a5f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 14px top 50%; background-size: 12px auto; padding-right: 40px; }
+    
+    .checkbox-group, .radio-group { display: flex; flex-wrap: wrap; gap: 12px; }
+    .checkbox-item, .radio-item { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg); border-radius: var(--radius-sm); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; flex: 1 1 auto; min-width: 180px; }
+    .checkbox-item:hover, .radio-item:hover { border-color: var(--primary-light); background: var(--surface-solid); box-shadow: var(--shadow-sm); }
+    .radio-item:has(input:checked), .checkbox-item:has(input:checked) { background: var(--primary-alpha); border-color: var(--primary); }
+    .checkbox-item input, .radio-item input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
+    .checkbox-item label, .radio-item label { margin: 0; cursor: pointer; font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; text-transform: none; letter-spacing: normal; color: var(--text-main); }
+    
+    /* Toggle Switch Styles */
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .3s var(--ease-out); border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s var(--ease-out); border-radius: 50%; box-shadow: var(--shadow-sm); }
+    input:checked + .slider { background-color: var(--success); }
+    input:checked + .slider:before { transform: translateX(20px); }
+    input:focus + .slider { box-shadow: 0 0 1px var(--success); }
+    
+    .pm-section { display: block; background: var(--bg); padding: 32px; border-radius: var(--radius-md); border: 1px solid var(--border); position: relative; overflow: visible; }
+    .pm-section::before { content: 'Project Manager / Insurance Details'; position: absolute; top: -10px; left: 24px; background: var(--bg); padding: 0 10px; font-size: 12px; font-weight: 600; color: var(--primary); border-radius: 100px; border: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .form-sections { display: flex; flex-direction: column; overflow: visible; }
     .form-sections.insurance-mode #pmSection { order: 1; }
-    .form-sections.insurance-mode #clientSection { order: 2; }
+    .form-sections.insurance-mode #clientSection { order: 2; margin-top: 40px; }
+    
     .pm-search-container { position: relative; }
-    .pm-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); max-height: 200px; overflow-y: auto; z-index: 100; display: none; }
-    .pm-suggestion { padding: 12px 14px; cursor: pointer; border-bottom: 1px solid #eee; }
+    .pm-suggestions { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface-solid); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); max-height: 250px; overflow-y: auto; z-index: 1000; display: none; }
+    .pm-suggestion { padding: 16px; cursor: pointer; border-bottom: 1px solid var(--bg); transition: background 0.2s; }
     .pm-suggestion:last-child { border-bottom: none; }
-    .pm-suggestion:hover { background: #f0f7ff; }
-    .pm-suggestion .name { font-weight: 500; color: #333; }
-    .pm-suggestion .company { font-size: 12px; color: #666; }
-    .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #f4a261 0%, #e76f51 100%); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; margin-top: 20px; }
-    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(244, 162, 97, 0.4); }
-    .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .pm-suggestion:hover { background: var(--primary-alpha); }
+    .pm-suggestion .name { font-weight: 600; font-family: 'Outfit'; color: var(--primary); font-size: 15px; }
+    .pm-suggestion .company { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    
+    .submit-btn { width: 100%; padding: 18px 32px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border: none; border-radius: 100px; font-size: 18px; font-family: 'Outfit'; font-weight: 600; cursor: pointer; transition: all 0.3s var(--ease-out); margin-top: 32px; box-shadow: 0 4px 15px rgba(30, 58, 95, 0.2); display: flex; justify-content: center; align-items: center; gap: 12px; }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(30, 58, 95, 0.3); background: linear-gradient(135deg, var(--primary-light), var(--primary)); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; background: var(--text-muted); box-shadow: none; }
+    
     .loading { display: none; text-align: center; padding: 40px; }
-    .loading.visible { display: block; }
-    .spinner { width: 50px; height: 50px; border: 4px solid #e8f4f8; border-top-color: #1e3a5f; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .success-message, .error-message { display: none; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-    .success-message { background: #d4edda; color: #155724; }
+    .loading.visible { display: block; animation: fadeIn 0.3s ease; }
+    .spinner { width: 48px; height: 48px; border: 3px solid var(--border); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite; margin: 0 auto 24px; }
+    
+    .success-message, .error-message { display: none; padding: 24px; border-radius: var(--radius-md); margin-bottom: 32px; border: 1px solid; animation: slideInUp 0.4s var(--ease-out); }
+    .success-message { background: var(--success-light); color: #065f46; border-color: rgba(16, 185, 129, 0.2); }
     .success-message.visible, .error-message.visible { display: block; }
-    .error-message { background: #f8d7da; color: #721c24; }
-    .result-links { margin-top: 16px; }
-    .result-links a { display: inline-block; margin-right: 16px; margin-bottom: 8px; color: #1e3a5f; font-weight: 500; }
-    @media (max-width: 600px) { .form-card { padding: 20px; } .form-row { grid-template-columns: 1fr; } .header h1 { font-size: 24px; } .user-info { flex-direction: column; gap: 12px; text-align: center; } }
+    .error-message { background: var(--error-light); color: #991b1b; border-color: rgba(239, 68, 68, 0.2); }
+    
+    .result-links { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 12px; }
+    .result-links a { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: white; color: var(--primary); font-weight: 600; border-radius: 100px; text-decoration: none; box-shadow: var(--shadow-sm); border: 1px solid var(--border); transition: all 0.2s; font-size: 14px; font-family: 'Outfit'; }
+    .result-links a:hover { background: var(--primary); color: white; border-color: var(--primary); box-shadow: var(--shadow-md); }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (max-width: 600px) { body { padding: 16px; } .form-card { padding: 32px 24px; } .form-row { grid-template-columns: 1fr; } .header h1 { font-size: 28px; } .user-info { flex-direction: column; gap: 12px; text-align: center; } .checkbox-item, .radio-item { min-width: 100%; } }
+    
     /* Google Places Autocomplete dropdown styling */
-    .pac-container { 
-      z-index: 10000 !important; 
-      border-radius: 8px; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
-      font-family: 'Inter', sans-serif; 
-      background-color: white !important;
-      border: 1px solid #ddd;
-      margin-top: 2px;
-    }
-    .pac-item { padding: 10px 14px; cursor: pointer; font-size: 14px; }
-    .pac-item:hover { background: #f0f7ff; }
-    .pac-item-query { font-size: 14px; color: #333; }
-    .pac-matched { font-weight: 600; }
-    /* Ensure form elements don't clip the dropdown */
-    .form-card { overflow: visible; }
-    .section { overflow: visible; }
-    .form-group { overflow: visible; position: relative; }
-    .form-sections { overflow: visible; }
+    .pac-container { z-index: 10000 !important; border-radius: var(--radius-sm); border: none; box-shadow: var(--shadow-lg); font-family: 'Inter', sans-serif; background-color: var(--surface-solid) !important; margin-top: 8px; padding: 8px 0; }
+    .pac-item { padding: 12px 16px; cursor: pointer; font-size: 14px; border-top: none; color: var(--text-muted); }
+    .pac-item:hover { background: var(--primary-alpha); }
+    .pac-item-query { font-size: 15px; color: var(--text-main); font-weight: 500; padding-right: 4px; }
+    .pac-icon { display: none; }
   </style>
   
   <!-- Google Maps Places API (loaded without callback, initialized on DOMContentLoaded) -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKdY9tYWpTXhZGnI4ITlF6KF8WwGmCz4s&libraries=places" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKdY9tYWpTXhZGnI4ITlF6KF8WwGmCz4s&libraries=places,geometry" async defer></script>
 </head>
 <body>
+  <div class="bg-mesh"></div>
   <div class="container">
     <div class="header">
       <img src="Immediateresponselogo.jpg" alt="Immediate Response HVAC" class="header-logo">
@@ -143,10 +229,10 @@
               <label>Job Type <span class="required">*</span></label>
               <select id="jobType" required>
                 <option value="">Select job type...</option>
-                <option value="Residential">Residential</option>
-                <option value="Commercial">Commercial</option>
                 <option value="Res_Insurance">Residential Insurance</option>
                 <option value="Comm_Insurance">Commercial Insurance</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Residential">Residential</option>
               </select>
             </div>
             <div class="form-group" id="claimTypeGroup" style="display: none;">
@@ -159,13 +245,57 @@
                 <option value="Other">Other</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Job Categories <span class="required">*</span></label>
-              <div class="checkbox-group" id="jobCategories"></div>
+            <div class="form-group" id="workRequestedGroup">
+              <label>Work Requested <span class="required">*</span></label>
+              <div class="radio-group" id="workRequested">
+                <div class="radio-item"><input type="radio" name="workRequested" id="wr_inspection" value="Inspection"><label for="wr_inspection">Inspection</label></div>
+                <div class="radio-item"><input type="radio" name="workRequested" id="wr_troubleshooting" value="Trouble Shooting"><label for="wr_troubleshooting">Trouble Shooting</label></div>
+                <div class="radio-item"><input type="radio" name="workRequested" id="wr_repairs" value="Repairs and Replacement"><label for="wr_repairs">Repairs and Replacement</label></div>
+                <div class="radio-item"><input type="radio" name="workRequested" id="wr_quote" value="Quote"><label for="wr_quote">Quote</label></div>
+                <div class="radio-item"><input type="radio" name="workRequested" id="wr_duct" value="Duct Cleaning"><label for="wr_duct">Duct Cleaning</label></div>
+                <div class="radio-item"><input type="radio" name="workRequested" id="wr_callback" value="Call Back"><label for="wr_callback">Call Back</label></div>
+                <div class="radio-item"><input type="radio" name="workRequested" id="wr_maintenance" value="Maintenance Service"><label for="wr_maintenance">Maintenance Service</label></div>
+              </div>
+            </div>
+            <div class="form-group" id="inspectionOptionsGroup" style="display: none; margin-top: 16px;">
+              <label>Select Option(s)</label>
+              <div class="checkbox-group" id="inspectionCheckboxes">
+                <!-- Dynamically populated based on QBO matrix -->
+              </div>
+            </div>
+            <div id="applianceCountGroup" style="display: none;">
+              <input type="hidden" id="applianceCount" min="1">
+            </div>
+            <div id="otherApplianceGroupWrapper" style="display: none; padding: 16px; background: var(--surface-solid); border: 1px dashed var(--border); border-radius: var(--radius-sm); margin-top: 16px;">
+              <div class="form-group">
+                <label>Number of other appliances <span class="required">*</span></label>
+                <input type="number" id="otherApplianceCount" min="1" placeholder="Enter number of other appliances (e.g. 2)">
+              </div>
+              <div class="form-group" style="margin-top: 16px;">
+                <label>Name other appliances <span class="required">*</span></label>
+                <input type="text" id="otherApplianceNames" placeholder="e.g. Stove, BBQ">
+              </div>
+            </div>
+            <div class="form-group" id="miscDescriptionGroup" style="display: none; margin-top: 16px;">
+              <label>Miscellaneous Description</label>
+              <textarea id="miscDescription" placeholder="Please describe the miscellaneous work..."></textarea>
+            </div>
+            <div id="callBackOtherGroupWrapper" style="display: none; padding: 16px; background: var(--surface-solid); border: 1px dashed var(--border); border-radius: var(--radius-sm); margin-top: 16px;">
+              <div class="form-group">
+                <label>Call Back Reason <span class="required">*</span></label>
+                <input type="text" id="callBackOtherReason" placeholder="Describe the reason for the call back...">
+              </div>
             </div>
           </div>
           <div class="section" id="propertySection">
             <div class="section-title">Property Information</div>
+            <div class="form-group full-width" style="margin-bottom: 16px;">
+              <label>Have we worked here before?</label>
+              <div class="radio-group" id="workedHereBefore">
+                <div class="radio-item"><input type="radio" name="workedHere" id="worked_no" value="No" checked><label for="worked_no">No</label></div>
+                <div class="radio-item"><input type="radio" name="workedHere" id="worked_yes" value="Yes"><label for="worked_yes">Yes</label></div>
+              </div>
+            </div>
             <div class="form-group full-width">
               <label>Property Address <span class="required">*</span></label>
               <input type="text" id="propertyAddress" placeholder="123 Main Street, Calgary, AB" required>
@@ -175,22 +305,42 @@
               <input type="text" id="apartmentNumber" placeholder="Unit 101, Suite 5A, etc.">
             </div>
           </div>
+          
+          <div class="section" id="travelComplianceSection" style="display: none;">
+            <div class="section-title" style="color: var(--error);">Travel Compliance Warning</div>
+            <div class="form-group full-width">
+              <div class="checkbox-item" style="border-color: var(--error); background: var(--error-light);">
+                <input type="checkbox" id="travelComplianceAck">
+                <label for="travelComplianceAck" id="travelComplianceLabel" style="color: #991b1b; font-weight: 600;">
+                  This job site is OVER 80km from Whitby HQ. A Travel Compliance log will be required. Please acknowledge.
+                </label>
+              </div>
+            </div>
+            <div class="form-group full-width" style="margin-top: 15px;">
+              <label style="color: #991b1b; font-weight: 600;">Will staff be staying away from home? (Form TD4 Required) <span class="required">*</span></label>
+              <div class="radio-group" style="display: flex; gap: 15px; margin-top: 8px;">
+                <label class="radio-item"><input type="radio" name="td4Required" value="Yes"> Yes</label>
+                <label class="radio-item"><input type="radio" name="td4Required" value="No"> No</label>
+              </div>
+            </div>
+          </div>
+          
           <div class="form-sections" id="formSections">
           <div class="section" id="clientSection">
             <div class="section-title">Property Owner Information</div>
             <div class="form-row">
               <div class="form-group">
-                <label>Property Owner Name <span class="required">*</span></label>
-                <input type="text" id="clientName" placeholder="John Smith" required>
+                <label>Property Owner Name <span class="required client-req" style="display: none;">*</span></label>
+                <input type="text" id="clientName" placeholder="John Smith">
               </div>
               <div class="form-group">
-                <label>Property Owner Email</label>
+                <label>Property Owner Email <span class="required client-req" style="display: none;">*</span></label>
                 <input type="email" id="clientEmail" placeholder="john@email.com">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Property Owner Phone</label>
+                <label>Property Owner Phone <span class="required client-req" style="display: none;">*</span></label>
                 <input type="tel" id="clientPhone" placeholder="403-555-1234">
               </div>
             </div>
@@ -199,57 +349,78 @@
             <div class="section-title">Project Manager Information</div>
             <div class="form-row">
               <div class="form-group pm-search-container">
-                <label>PM Full Name <span class="required">*</span></label>
+                <label>PM Full Name <span class="required pm-req" style="display: none;">*</span></label>
                 <input type="text" id="pmName" placeholder="Start typing to search..." autocomplete="off">
                 <div class="pm-suggestions" id="pmSuggestions"></div>
               </div>
               <div class="form-group">
-                <label>Company Name</label>
+                <label>Company Name <span class="required pm-req" style="display: none;">*</span></label>
                 <input type="text" id="pmCompany" placeholder="Insurance Co">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>PM Email</label>
+                <label>PM Email <span class="required pm-req" style="display: none;">*</span></label>
                 <input type="email" id="pmEmail" placeholder="nicole@insurance.com">
               </div>
               <div class="form-group">
-                <label>PM Phone</label>
+                <label>PM Phone <span class="required pm-req" style="display: none;">*</span></label>
                 <input type="tel" id="pmPhone" placeholder="403-555-5678">
               </div>
             </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Assistant PM Email(s)</label>
+                <input type="text" id="assistantEmails" placeholder="assistant1@..., assistant2@...">
+              </div>
+              <div class="form-group">
+                <label>Billing Email(s)</label>
+                <input type="text" id="billingEmails" placeholder="ap@..., accounts@...">
+              </div>
+            </div>
             <div class="form-group full-width">
-              <label>Billing Address</label>
+              <label>Billing Address <span class="required pm-req" style="display: none;">*</span></label>
               <input type="text" id="pmBillingAddress" placeholder="100 Corporate Blvd, Calgary, AB">
             </div>
           </div>
           </div><!-- end form-sections -->
           <div class="section" id="visitSection">
             <div class="section-title">Visit Details</div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Requested Visit Date/Time <span class="required">*</span></label>
-                <input type="datetime-local" id="visitRequested" required>
+            <div class="form-group full-width" style="margin-bottom: 16px;">
+              <label>Schedule Type</label>
+              <div class="radio-group">
+                <div class="radio-item"><input type="radio" name="scheduleType" id="st_tbd" value="To be scheduled" checked><label for="st_tbd">To be scheduled</label></div>
+                <div class="radio-item"><input type="radio" name="scheduleType" id="st_fixed" value="Fixed Schedule"><label for="st_fixed">Fixed Schedule</label></div>
               </div>
-              <div class="form-group">
-                <label>Visit Status <span class="required">*</span></label>
-                <select id="visitStatus" required>
-                  <option value="">Select status...</option>
-                  <option value="To Be Scheduled">To Be Scheduled</option>
-                  <option value="Confirmed date">Confirmed date</option>
-                </select>
+            </div>
+            <div class="form-row" id="visitRequestedGroup" style="display: none;">
+              <div class="form-group full-width">
+                <label>Requested Visit Date/Time <span class="required">*</span></label>
+                <input type="datetime-local" id="visitRequested">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Access Instructions</label>
-                <select id="accessInstructions">
-                  <option value="">Select...</option>
-                  <option value="Contact PM">Contact PM</option>
-                  <option value="Contact Client">Contact Client</option>
+                <label>Number of days required <span class="required">*</span></label>
+                <input type="number" id="job_duration" value="1" min="1" required>
+              </div>
+              <div class="form-group" style="justify-content: center;">
+                <div class="checkbox-item" style="margin-top: 24px;">
+                  <input type="checkbox" id="include_weekends" checked>
+                  <label for="include_weekends">Weekends included?</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label for="accessInstructions">Access Instructions</label>
+                <select id="accessInstructions" name="accessInstructions">
+                  <option value="" disabled selected>Select how to access property...</option>
+                  <option value="Contact PM">Contact you (PM) directly</option>
+                  <option value="Contact Client">Contact the client directly</option>
                   <option value="Crew on site - Reg hrs">Crew on site - Reg hrs</option>
                   <option value="Crew on site - 24 hrs">Crew on site - 24 hrs</option>
-                  <option value="Lockbox">Lockbox</option>
+                  <option value="Lockbox">Lockbox (Show Code field)</option>
                 </select>
               </div>
             </div>
@@ -262,8 +433,48 @@
               <input type="text" id="poNumber" placeholder="e.g. PO-12345">
             </div>
             <div class="form-group full-width">
-              <label>Scope / Job Details</label>
-              <textarea id="scopeDetails" placeholder="Describe the work needed..."></textarea>
+              <label>Scope / Job Details <span class="required">*</span></label>
+              <textarea id="scopeDetails" placeholder="Describe the work needed..." required></textarea>
+            </div>
+            
+            <!-- Automation Preferences -->
+            <div class="form-row">
+              <div class="form-group full-width" style="margin-top: 10px; padding: 15px; border: 1px solid var(--border); border-radius: var(--radius-sm); background-color: var(--bg);">
+                <label style="font-size: 14px; color: var(--primary); border-bottom: 2px solid var(--primary-alpha); padding-bottom: 8px; margin-bottom: 16px; display: block; letter-spacing: 0.5px;">Automation Preferences</label>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                  <div style="padding-right: 15px;">
+                    <strong style="color: var(--text-main); font-size: 14px;">Automated Email Communication</strong>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: 'Inter', sans-serif;">If turned off, no automated emails will be sent to the client.</div>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="automated_email" checked>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                  <div style="padding-right: 15px;">
+                    <strong style="color: var(--text-main); font-size: 14px;">Calendar Event</strong>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: 'Inter', sans-serif;">If turned off, no calendar event will be created.</div>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="calendar_event" checked>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="padding-right: 15px;">
+                    <strong style="color: var(--text-main); font-size: 14px;">Automated QBO Work Order</strong>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: 'Inter', sans-serif;">If turned off, QuickBooks Online syncing and Estimate creation will be skipped.</div>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="automated_qbo" checked>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
           <button type="submit" class="submit-btn" id="submitBtn">Submit Lead</button>
@@ -296,13 +507,98 @@
         const propertyAutocomplete = new google.maps.places.Autocomplete(propertyAddressInput, {
           types: ['address'],
           componentRestrictions: { country: 'ca' },
-          fields: ['formatted_address']
+          fields: ['formatted_address', 'geometry']
         });
-        propertyAutocomplete.addListener('place_changed', () => {
+        propertyAutocomplete.addListener('place_changed', async () => {
           const place = propertyAutocomplete.getPlace();
           console.log('Place selected:', place);
           if (place.formatted_address) {
             propertyAddressInput.value = place.formatted_address;
+            
+            // Check Travel Compliance > 80km
+            if (place.geometry && place.geometry.location) {
+               const hqCoords = new google.maps.LatLng(43.8860, -78.9181); // Whitby HQ
+               const distanceMetres = google.maps.geometry.spherical.computeDistanceBetween(hqCoords, place.geometry.location);
+               window._currentDistanceMetres = distanceMetres;
+               const travelSection = document.getElementById('travelComplianceSection');
+               const travelAck = document.getElementById('travelComplianceAck');
+               const travelLabel = document.getElementById('travelComplianceLabel');
+               const td4Radios = document.querySelectorAll('input[name="td4Required"]');
+               if (distanceMetres > 80000) {
+                 travelSection.style.display = 'block';
+                 travelAck.required = true;
+                 td4Radios.forEach(r => r.required = true);
+                 travelLabel.textContent = `This job site is ${(distanceMetres/1000).toFixed(1)} km from Whitby HQ. A CRA-compliant Travel Log will be generated. Please acknowledge.`;
+               } else {
+                 travelSection.style.display = 'none';
+                 travelAck.required = false;
+                 travelAck.checked = false;
+                 td4Radios.forEach(r => { r.required = false; r.checked = false; });
+               }
+            }
+            
+            // Worked here before logic
+            const workedHere = document.querySelector('input[name="workedHere"]:checked')?.value;
+            if (workedHere === 'Yes') {
+              console.log('Looking up previous address history...');
+              try {
+                const leadsQuery = await db.collection('leads')
+                  .where('property_address', '==', place.formatted_address)
+                  .get();
+                  
+                if (!leadsQuery.empty) {
+                  // Get the most recently created lead locally
+                  const docs = leadsQuery.docs.map(d => d.data());
+                  docs.sort((a, b) => (b.created_at?.toMillis?.() || 0) - (a.created_at?.toMillis?.() || 0));
+                  const lead = docs[0];
+                  console.log('Found previous lead:', lead);
+                  
+                  if (lead.client_name) document.getElementById('clientName').value = lead.client_name;
+                  if (lead.client_email) document.getElementById('clientEmail').value = lead.client_email;
+                  if (lead.client_cell) document.getElementById('clientPhone').value = lead.client_cell;
+                  
+                  if (lead.pm && lead.job_type && lead.job_type.includes('Insurance')) {
+                    const jobTypeSelect = document.getElementById('jobType');
+                    if (jobTypeSelect.value !== lead.job_type) {
+                      // Preserve currently checked boxes
+                      const checkedBoxes = Array.from(document.querySelectorAll('#inspectionCheckboxes input:checked')).map(cb => cb.value);
+                      const otherNamesInput = document.getElementById('otherApplianceNames');
+                      const otherCountInput = document.getElementById('otherApplianceCount');
+                      const savedOtherNames = otherNamesInput ? otherNamesInput.value : '';
+                      const savedOtherCount = otherCountInput ? otherCountInput.value : '1';
+
+                      jobTypeSelect.value = lead.job_type;
+                      jobTypeSelect.dispatchEvent(new Event('change'));
+
+                      // Restore checked boxes and "other" info
+                      checkedBoxes.forEach(val => {
+                        const cb = document.querySelector(`#inspectionCheckboxes input[value="${val}"]`);
+                        if (cb) cb.checked = true;
+                      });
+                      
+                      const otherCb = document.querySelector('#inspectionCheckboxes input[value="Other"]');
+                      if (otherCb && otherCb.checked) {
+                        const otherGroup = document.getElementById('otherApplianceGroupWrapper');
+                        if (otherGroup) otherGroup.style.display = 'block';
+                        if (document.getElementById('otherApplianceNames')) document.getElementById('otherApplianceNames').value = savedOtherNames;
+                        if (document.getElementById('otherApplianceCount')) document.getElementById('otherApplianceCount').value = savedOtherCount;
+                      }
+
+                      if (typeof updateScopeFromCheckboxes === 'function') updateScopeFromCheckboxes();
+                      if (typeof updateApplianceCount === 'function') updateApplianceCount();
+                    }
+                    
+                    document.getElementById('pmName').value = lead.pm.full_name || '';
+                    document.getElementById('pmCompany').value = lead.pm.company_name || '';
+                    document.getElementById('pmEmail').value = lead.pm.email || '';
+                    document.getElementById('pmPhone').value = lead.pm.cell_phone || '';
+                    document.getElementById('pmBillingAddress').value = lead.pm.billing_address || '';
+                  }
+                }
+              } catch (e) {
+                console.log('Firestore lead lookup error or permissions:', e);
+              }
+            }
           }
         });
         console.log('Autocomplete attached to:', propertyAddressInput.id);
@@ -402,7 +698,7 @@
     // Sign in with Google
     signInBtn.addEventListener('click', async () => {
       const provider = new firebase.auth.GoogleAuthProvider();
-      provider.setCustomParameters({ hd: 'immediateresponsehvac.ca' });
+      // Allow any Google account to sign in (e.g. for Sarah/Nicole parsing via other emails)
       try {
         await auth.signInWithPopup(provider);
       } catch (error) {
@@ -429,73 +725,346 @@
 
     signOutBtn.addEventListener('click', () => auth.signOut());
 
-    const jobCategories = {
-      flood: ['Inspection - Full HVAC Flood','Inspection - Furnace System - Flood','Inspection - Air Conditioner - Flood','Inspection - HWT Flood','Inspection - Boiler System Flood'],
-      fire: ['Inspection - Full HVAC Fire','Inspection - Furnace System - Fire','Inspection - Air Conditioner Fire','Inspection - HWT Fire','Inspection - Boiler System Fire','Inspection - Emergency Commercial Fire','Inspection - Fireplace'],
-      abatement: ['Inspection - Ductwork Residential','Inspection - Ductwork Commercial','Cleaning - Residential Duct','Cleaning - Commercial Duct','Re and Re - Ventilation System'],
-      replacement: ['Re and Re - Full HVAC','Re and Re - Furnace','Re and Re - AC','Re and Re - HWT','Re and Re - Furnace and HWT','Re and Re - Furnace and AC','Re and Re - Boiler unit','Re and Re - Boiler unit and HWT'],
-      service: ['Troubleshooting - Furnace','Troubleshooting - AC','Troubleshooting - HVAC','Thermostat - Service Call','Miscellaneous']
-    };
-
     const form = document.getElementById('intakeForm');
+    
+    // Prevent Enter key from submitting the form, unless it's within a textarea or on a button
+    form.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON') {
+        e.preventDefault();
+      }
+    });
     const jobTypeSelect = document.getElementById('jobType');
     const claimTypeGroup = document.getElementById('claimTypeGroup');
     const claimTypeSelect = document.getElementById('claimType');
     const pmSection = document.getElementById('pmSection');
     const formSections = document.getElementById('formSections');
-    const categoriesContainer = document.getElementById('jobCategories');
+    const miscDescriptionGroup = document.getElementById('miscDescriptionGroup');
+    const miscDescriptionInput = document.getElementById('miscDescription');
+    const inspectionOptionsGroup = document.getElementById('inspectionOptionsGroup');
+    const scopeDetailsInput = document.getElementById('scopeDetails');
     const pmNameInput = document.getElementById('pmName');
     const pmSuggestions = document.getElementById('pmSuggestions');
-    const accessInstructionsSelect = document.getElementById('accessInstructions');
     const lockboxCodeGroup = document.getElementById('lockboxCodeGroup');
     const loading = document.getElementById('loading');
     const successMessage = document.getElementById('successMessage');
     const errorMessage = document.getElementById('errorMessage');
 
-    function updateCategories() {
-      const jobType = jobTypeSelect.value;
-      const claimType = claimTypeSelect.value?.toLowerCase();
-      const isInsurance = jobType.includes('Insurance');
-      let categories = [];
-      if (isInsurance && claimType) {
-        categories = [...(jobCategories[claimType] || []), ...jobCategories.replacement, ...jobCategories.service];
-      } else if (!isInsurance && jobType) {
-        categories = [...jobCategories.flood, ...jobCategories.fire, ...jobCategories.abatement, ...jobCategories.replacement, ...jobCategories.service];
+    const qboCategories = {
+      flood: ['Inspection - Furnace System - Flood','Inspection - Air Conditioner - Flood','Inspection - HWT Flood','Inspection - Boiler System Flood'],
+      fire: ['Inspection - Furnace System - Fire','Inspection - Air Conditioner Fire','Inspection - HWT Fire','Inspection - Boiler System Fire','Inspection - Fireplace'],
+      abatement: ['Cleaning - Residential Duct','Cleaning - Commercial Duct','Re and Re - Ventilation System'],
+      replacement: ['Re and Re - Full HVAC','Re and Re - Furnace','Re and Re - AC','Re and Re - HWT','Re and Re - Furnace and HWT','Re and Re - Furnace and AC','Re and Re - Boiler unit','Re and Re - Boiler unit and HWT'],
+      service: ['Troubleshooting - Furnace','Troubleshooting - AC','Troubleshooting - HVAC','Thermostat - Service Call','Miscellaneous']
+    };
+
+    let lastAutoGeneratedScope = '';
+    
+    function buildApplianceCheckboxes() {
+      const workRequested = document.querySelector('input[name="workRequested"]:checked')?.value;
+      const isInsurance = jobTypeSelect.value.includes('Insurance');
+      
+      const inspectionOptionsGroup = document.getElementById('inspectionOptionsGroup');
+      const inspectionCheckboxes = document.getElementById('inspectionCheckboxes');
+      const countGroup = document.getElementById('applianceCountGroup');
+      const miscGroup = document.getElementById('miscDescriptionGroup');
+      
+
+
+      if (!workRequested || workRequested === 'Maintenance Service') {
+        inspectionOptionsGroup.style.display = 'none';
+        inspectionCheckboxes.innerHTML = '';
+        miscGroup.style.display = 'none';
+        
+        updateScopeFromCheckboxes();
+        return;
       }
-      categories = [...new Set(categories)];
-      categoriesContainer.innerHTML = categories.map(cat => `
-        <div class="checkbox-item">
-          <input type="checkbox" id="cat_${cat.replace(/\s+/g, '_')}" value="${cat}">
-          <label for="cat_${cat.replace(/\s+/g, '_')}">${cat}</label>
-        </div>
-      `).join('');
+
+      // Ensure "Have we worked here before" defaults to Yes when Call Back is selected.
+      if (workRequested === 'Call Back') {
+        const yesRadio = document.getElementById('worked_yes');
+        if (yesRadio) {
+          yesRadio.checked = true;
+        }
+      }
+      
+      let options = [];
+      let groupLabel = `Select Option(s)`;
+      if (workRequested === 'Inspection') {
+        options = ['Furnace', 'HWT', 'HRV System', 'Air Conditioner', 'Boiler System', 'Fireplace', 'Ducts', 'Other'];
+        groupLabel = `Select Appliances`;
+      } else if (workRequested === 'Call Back') {
+        options = ['Persistent Odor', 'Component Failure', 'No Heat', 'No Cool', 'Smart Home Disconnect', 'Other'];
+        groupLabel = `Select Reason`;
+      } else if (workRequested === 'Trouble Shooting') {
+        options = ['Furnace System -', 'Air Conditioner -', 'HWT', 'Boiler System', 'Thermostat', 'Miscellaneous'];
+      } else if (workRequested === 'Repairs and Replacement' || workRequested === 'Quote') {
+        options = ['Full HVAC', 'Furnace', 'AC', 'HWT', 'Furnace and HWT', 'Furnace and AC', 'Boiler unit', 'Boiler unit and HWT', 'Duct Work'];
+      } else if (workRequested === 'Duct Cleaning') {
+        options = ['Residential Duct', 'Commercial Duct', 'Ventilation System'];
+      }
+
+      if (options.length > 0) {
+        inspectionOptionsGroup.querySelector('label').textContent = groupLabel;
+        
+        const inputType = workRequested === 'Call Back' ? 'radio' : 'checkbox';
+        const nameAttr = workRequested === 'Call Back' ? 'name="callBackOption"' : '';
+
+        inspectionCheckboxes.innerHTML = options.map((opt, i) => {
+           return `
+             <div class="checkbox-item">
+               <input type="${inputType}" ${nameAttr} id="qboCat_${i}" value="${opt}" data-label="${opt}">
+               <label for="qboCat_${i}">${opt}</label>
+             </div>
+           `;
+        }).join('');
+        inspectionOptionsGroup.style.display = 'block';
+        
+        // Listeners to update the scope and appliance counts when checked
+        document.querySelectorAll('#inspectionCheckboxes input').forEach(cb => {
+          cb.addEventListener('change', () => {
+            updateScopeFromCheckboxes();
+            if (workRequested !== 'Call Back') {
+               updateApplianceCount();
+            }
+            
+            // Handle "Other" input visibility
+            if (cb.value === 'Other') {
+              if (workRequested === 'Call Back') {
+                const otherReasonGroup = document.getElementById('callBackOtherGroupWrapper');
+                if (cb.checked) {
+                  otherReasonGroup.style.display = 'block';
+                } else {
+                  otherReasonGroup.style.display = 'none';
+                  document.getElementById('callBackOtherReason').value = '';
+                  updateScopeFromCheckboxes();
+                }
+              } else {
+                const otherGroup = document.getElementById('otherApplianceGroupWrapper');
+                if (cb.checked) {
+                  otherGroup.style.display = 'block';
+                } else {
+                  otherGroup.style.display = 'none';
+                  document.getElementById('otherApplianceCount').value = '';
+                  document.getElementById('otherApplianceNames').value = '';
+                  updateApplianceCount();
+                  updateScopeFromCheckboxes();
+                }
+              }
+            } else if (workRequested === 'Call Back' && cb.checked) {
+               const otherReasonGroup = document.getElementById('callBackOtherGroupWrapper');
+               if (otherReasonGroup.style.display === 'block') {
+                 otherReasonGroup.style.display = 'none';
+                 const otherReasonInput = document.getElementById('callBackOtherReason');
+                 if (otherReasonInput) otherReasonInput.value = '';
+                 updateScopeFromCheckboxes();
+               }
+            }
+          });
+        });
+      } else {
+        inspectionOptionsGroup.style.display = 'none';
+        inspectionCheckboxes.innerHTML = '';
+      }
+      
+      updateApplianceCount();
+      updateScopeFromCheckboxes();
+    }
+
+    function updateApplianceCount() {
+      const checkmarks = document.querySelectorAll('#inspectionCheckboxes input:checked');
+      let count = 0;
+      checkmarks.forEach(cb => {
+        if (cb.value !== 'Other') {
+          count++;
+        }
+      });
+      const otherInput = document.getElementById('otherApplianceCount');
+      if (otherInput && otherInput.value) {
+        count += parseInt(otherInput.value, 10) || 0;
+      }
+      const applianceCountField = document.getElementById('applianceCount');
+      if (applianceCountField) {
+        applianceCountField.value = count > 0 ? count : '';
+      }
+    }
+    
+    // Listen for changes in the "Other" inputs to recalculate total and scope
+    document.getElementById('otherApplianceCount')?.addEventListener('input', updateApplianceCount);
+    document.getElementById('otherApplianceNames')?.addEventListener('input', updateScopeFromCheckboxes);
+    document.getElementById('callBackOtherReason')?.addEventListener('input', updateScopeFromCheckboxes);
+    
+    function updateScopeFromCheckboxes() {
+      const workRequested = document.querySelector('input[name="workRequested"]:checked')?.value || 'Service';
+      const isCallBack = workRequested === 'Call Back';
+      
+      const currentCheckboxes = document.querySelectorAll(isCallBack ? '#inspectionCheckboxes input[type="radio"]:checked' : '#inspectionCheckboxes input[type="checkbox"]:checked');
+      const selectedBoxesText = Array.from(currentCheckboxes).map(cb => {
+        const label = document.querySelector(`label[for="${cb.id}"]`);
+        return label ? label.textContent : cb.value;
+      });
+      const selectedBoxesValues = Array.from(currentCheckboxes).map(cb => cb.value);
+      const isInsurance = jobTypeSelect.value.includes('Insurance');
+      const claimType = claimTypeSelect.value;
+      
+      const miscChecked = selectedBoxesValues.includes('Miscellaneous');
+      document.getElementById('miscDescriptionGroup').style.display = miscChecked ? 'block' : 'none';
+
+      let newAutoScope = '';
+      
+      if (selectedBoxesText.length > 0 || workRequested) {
+        let itemsList = [];
+        selectedBoxesText.forEach(item => {
+          if (item === 'Other') {
+            if (isCallBack) {
+               const otherReasonInput = document.getElementById('callBackOtherReason');
+               const otherReason = otherReasonInput ? otherReasonInput.value.trim() : '';
+               if (otherReason) itemsList.push(otherReason);
+            } else {
+               const otherNamesInput = document.getElementById('otherApplianceNames');
+               const otherNames = otherNamesInput ? otherNamesInput.value.trim() : '';
+               if (otherNames) itemsList.push(otherNames);
+            }
+          } else {
+            itemsList.push(item === 'HWT' ? 'Hot Water Tank' : item);
+          }
+        });
+        
+        let formattedList = '';
+        if (itemsList.length === 1) {
+          formattedList = itemsList[0];
+        } else if (itemsList.length > 1) {
+          const lastItem = itemsList.pop();
+          // If the last item already starts with "and ", try not to double it, although usually they might just write "Stove and Dryer"
+          if (lastItem.toLowerCase().startsWith('and ')) {
+             formattedList = itemsList.join(', ') + ' ' + lastItem;
+          } else {
+             formattedList = itemsList.join(', ') + ' and ' + lastItem;
+          }
+        }
+
+        if (isCallBack) {
+           if (formattedList) {
+             newAutoScope = `Call Back Requested - Reason: ${formattedList}.\n\n`;
+           } else {
+             newAutoScope = `Call Back Requested.\n\n`;
+           }
+        } else {
+           let actionText = 'service';
+           if (workRequested === 'Inspection') actionText = 'inspect';
+           else if (workRequested === 'Trouble Shooting') actionText = 'trouble shoot';
+           else if (workRequested === 'Repairs and Replacement') actionText = 'repair or replace';
+           else if (workRequested === 'Quote') actionText = 'quote';
+           else if (workRequested === 'Duct Cleaning') actionText = 'clean';
+           
+           if (formattedList) {
+             newAutoScope = `${workRequested} Requested - Please ${actionText} the following appliances: ${formattedList}.\n\n`;
+           } else {
+             newAutoScope = `${workRequested} Requested.\n\n`;
+           }
+        }
+      }
+      
+      let currentScope = scopeDetailsInput.value;
+      if (lastAutoGeneratedScope && currentScope.includes(lastAutoGeneratedScope)) {
+        currentScope = currentScope.replace(lastAutoGeneratedScope, newAutoScope);
+      } else {
+        currentScope = newAutoScope + currentScope;
+      }
+      
+      scopeDetailsInput.value = currentScope;
+      lastAutoGeneratedScope = newAutoScope;
     }
 
     jobTypeSelect.addEventListener('change', () => {
+      const hasJobType = jobTypeSelect.value !== '';
       const isInsurance = jobTypeSelect.value.includes('Insurance');
+      const isClientRequired = hasJobType && !isInsurance;
+
       claimTypeGroup.style.display = isInsurance ? 'block' : 'none';
       if (!isInsurance) claimTypeSelect.value = '';
-      pmSection.classList.toggle('visible', isInsurance);
       formSections.classList.toggle('insurance-mode', isInsurance);
+      
+      document.querySelectorAll('.pm-req').forEach(span => {
+        span.style.display = isInsurance ? 'inline' : 'none';
+      });
+      document.querySelectorAll('.client-req').forEach(span => {
+        span.style.display = isClientRequired ? 'inline' : 'none';
+      });
+      
       document.getElementById('pmName').required = isInsurance;
-      updateCategories();
+      document.getElementById('pmCompany').required = isInsurance;
+      document.getElementById('pmEmail').required = isInsurance;
+      document.getElementById('pmPhone').required = isInsurance;
+      document.getElementById('pmBillingAddress').required = isInsurance;
+
+      document.getElementById('clientName').required = isClientRequired;
+      document.getElementById('clientEmail').required = isClientRequired;
+      document.getElementById('clientPhone').required = isClientRequired;
+      
+      miscDescriptionGroup.style.display = 'none';
+      miscDescriptionInput.value = '';
+      buildApplianceCheckboxes();
     });
 
-    claimTypeSelect.addEventListener('change', updateCategories);
+    document.querySelectorAll('input[name="workRequested"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        buildApplianceCheckboxes();
+        if (e.target.value === 'Call Back') {
+          const yesRadio = document.getElementById('worked_yes');
+          yesRadio.checked = true;
+          // Trigger the change event to run the autocomplete lookup if address is available
+          yesRadio.dispatchEvent(new Event('change'));
+          // In a real scenario, the user will likely choose this BEFORE entering address. 
+          // If they chose it AFTER, the address is already typed in, so we might want to manually trigger lookup.
+        }
+      });
+    });
+
+    claimTypeSelect.addEventListener('change', buildApplianceCheckboxes);
     
-    // Show/hide lockbox code field based on access instructions
-    accessInstructionsSelect.addEventListener('change', () => {
-      const isLockbox = accessInstructionsSelect.value === 'Lockbox';
+    // Show/hide lockbox code field based on access instructions dropdown
+    const accessInstructionsSelect = document.getElementById('accessInstructions');
+    accessInstructionsSelect.addEventListener('change', (e) => {
+      const isLockbox = e.target.value === 'Lockbox';
       lockboxCodeGroup.style.display = isLockbox ? 'block' : 'none';
       if (!isLockbox) document.getElementById('lockboxCode').value = '';
+    });
+
+    // Schedule Type logic toggle
+    document.querySelectorAll('input[name="scheduleType"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        const visitRequestedGroup = document.getElementById('visitRequestedGroup');
+        const isFixed = e.target.value === 'Fixed Schedule';
+        visitRequestedGroup.style.display = isFixed ? 'flex' : 'none';
+        document.getElementById('visitRequested').required = isFixed;
+      });
     });
 
     // Load PMs from Firestore on auth
     async function loadPMsFromFirestore() {
       try {
         const snapshot = await db.collection('pms').get();
-        pmCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log(`Loaded ${pmCache.length} PMs from Firestore`);
+        let pms = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // Sort by last_updated or updated_at descending, then created_at descending
+        pms.sort((a, b) => {
+          const timeA = a.last_updated?.toMillis?.() || a.updated_at?.toMillis?.() || a.created_at?.toMillis?.() || 0;
+          const timeB = b.last_updated?.toMillis?.() || b.updated_at?.toMillis?.() || b.created_at?.toMillis?.() || 0;
+          return timeB - timeA;
+        });
+        
+        // Deduplicate by full_name + company_name to ensure we only have the freshest data
+        const uniquePMs = [];
+        const seen = new Set();
+        for (const pm of pms) {
+          const key = `${pm.full_name || ''}_${pm.company_name || ''}`.toLowerCase().trim();
+          if (!seen.has(key)) {
+            seen.add(key);
+            uniquePMs.push(pm);
+          }
+        }
+        pmCache = uniquePMs;
+        console.log(`Loaded ${pmCache.length} PMs from Firestore (deduplicated)`);
       } catch (error) {
         console.error('Error loading PMs from Firestore:', error);
       }
@@ -531,15 +1100,22 @@
         
         const pmRecord = {
           full_name: pmData.full_name,
-          company_name: pmData.company_name || '',
-          email: pmData.email || '',
-          cell_phone: pmData.cell_phone || '',
-          billing_address: pmData.billing_address || '',
-          updated_at: firebase.firestore.FieldValue.serverTimestamp()
+          last_updated: firebase.firestore.FieldValue.serverTimestamp()
         };
+        if (pmData.company_name) pmRecord.company_name = pmData.company_name;
+        if (pmData.email) pmRecord.email = pmData.email;
+        if (pmData.cell_phone) pmRecord.cell_phone = pmData.cell_phone;
+        if (pmData.billing_address) pmRecord.billing_address = pmData.billing_address;
+        
+        if (pmData.assistant_emails !== undefined) {
+          pmRecord.assistant_emails = pmData.assistant_emails ? pmData.assistant_emails : firebase.firestore.FieldValue.delete();
+        }
+        if (pmData.billing_emails !== undefined) {
+          pmRecord.billing_emails = pmData.billing_emails ? pmData.billing_emails : firebase.firestore.FieldValue.delete();
+        }
         
         if (existingPM) {
-          await db.collection('pms').doc(existingPM.id).update(pmRecord);
+          await db.collection('pms').doc(existingPM.id).set(pmRecord, { merge: true });
           console.log('Updated existing PM:', existingPM.id);
         } else {
           pmRecord.created_at = firebase.firestore.FieldValue.serverTimestamp();
@@ -583,7 +1159,16 @@
         document.getElementById('pmCompany').value = pm.company_name || '';
         document.getElementById('pmEmail').value = pm.email || '';
         document.getElementById('pmPhone').value = pm.cell_phone || '';
-        document.getElementById('pmBillingAddress').value = pm.billing_address || '';
+        document.getElementById('assistantEmails').value = pm.assistant_emails || '';
+        document.getElementById('billingEmails').value = pm.billing_emails || '';
+        const pmBillingAddressInput = document.getElementById('pmBillingAddress');
+        if (pmBillingAddressInput) {
+            pmBillingAddressInput.value = pm.billing_address || '';
+            // If the PM is selected but lacks a billing address, explicitly warn the user visually (optional)
+            if (!pm.billing_address) {
+                pmBillingAddressInput.placeholder = "No billing address found. Please enter it manually.";
+            }
+        }
         pmSuggestions.style.display = 'none';
       }
     });
@@ -599,25 +1184,57 @@
       
       if (!auth.currentUser) { alert('Please sign in first'); return; }
       
-      const selectedCategories = Array.from(document.querySelectorAll('#jobCategories input:checked')).map(cb => cb.value);
-      if (selectedCategories.length === 0) { alert('Please select at least one job category'); return; }
+      const selectedWork = document.querySelector('input[name="workRequested"]:checked')?.value;
+      if (!selectedWork) { alert('Please select the Work Requested'); return; }
 
       const isInsurance = jobTypeSelect.value.includes('Insurance');
+      const isCallBack = selectedWork === 'Call Back';
+      const workedHere = document.querySelector('input[name="workedHere"]:checked')?.value === 'Yes';
+      const isAdditionalWork = workedHere && !isCallBack;
+
+      if (isInsurance) {
+        if (!document.getElementById('pmBillingAddress').value.trim()) {
+           alert('Billing Address is required for Insurance jobs.');
+           return;
+        }
+      }
+
       const data = {
         property_address: document.getElementById('propertyAddress').value,
         apartment_number: document.getElementById('apartmentNumber').value || null,
         job_type: jobTypeSelect.value,
         claim_type: isInsurance ? claimTypeSelect.value : null,
-        job_categories: selectedCategories,
+        job_categories: Array.from(document.querySelectorAll('#inspectionCheckboxes input:checked')).length > 0 
+          ? [selectedWork, ...Array.from(document.querySelectorAll('#inspectionCheckboxes input:checked')).map(cb => cb.value)]
+          : [selectedWork],
+        appliance_count: document.getElementById('applianceCount')?.value || null,
+        misc_description: miscDescriptionGroup.style.display !== 'none' ? miscDescriptionInput.value : null,
         client_name: document.getElementById('clientName').value,
         client_email: document.getElementById('clientEmail').value || null,
         client_cell: document.getElementById('clientPhone').value || null,
         scope_details: document.getElementById('scopeDetails').value || null,
         po_number: document.getElementById('poNumber').value || null,
-        visit_requested: new Date(document.getElementById('visitRequested').value).toISOString(),
-        visit_status: document.getElementById('visitStatus').value || null,
+        visit_requested: (() => {
+          try {
+            const val = document.getElementById('visitRequested').value;
+            return val ? new Date(val).toISOString() : new Date().toISOString();
+          } catch(e) {
+            return new Date().toISOString();
+          }
+        })(),
+        visit_status: document.querySelector('input[name="scheduleType"]:checked')?.value === 'Fixed Schedule' ? 'Confirmed date' : 'To Be Scheduled',
         access_instructions: document.getElementById('accessInstructions').value || null,
         lockbox_code: document.getElementById('lockboxCode').value || null,
+        is_call_back: isCallBack,
+        additional_work: isAdditionalWork,
+        distance_metres: window._currentDistanceMetres || 0,
+        td4_required: document.querySelector('input[name="td4Required"]:checked')?.value === 'Yes',
+        job_duration: parseInt(document.getElementById('job_duration').value) || 1,
+        include_weekends: document.getElementById('include_weekends').checked,
+        has_actionable_quote_details: selectedWork === 'Quote',
+        automated_email: document.getElementById('automated_email')?.checked ?? true,
+        calendar_event: document.getElementById('calendar_event')?.checked ?? true,
+        automated_qbo: document.getElementById('automated_qbo')?.checked ?? true,
       };
       
       if (isInsurance) {
@@ -627,7 +1244,11 @@
           email: document.getElementById('pmEmail').value || null,
           cell_phone: document.getElementById('pmPhone').value || null,
           billing_address: document.getElementById('pmBillingAddress').value || null,
+          assistant_emails: document.getElementById('assistantEmails').value || null,
+          billing_emails: document.getElementById('billingEmails').value || null,
         };
+        // CRITICAL: Tell the backend to merge this updated PM info into the pms collection
+        data.update_pm = true;
       }
 
       form.style.display = 'none';
@@ -655,7 +1276,22 @@
             formSections.classList.remove('insurance-mode');
             claimTypeGroup.style.display = 'none';
             lockboxCodeGroup.style.display = 'none';
-            updateCategories();
+            miscDescriptionGroup.style.display = 'none';
+            document.getElementById('visitRequestedGroup').style.display = 'none';
+            document.getElementById('visitRequested').required = false;
+            document.getElementById('inspectionOptionsGroup').style.display = 'none';
+            document.getElementById('otherApplianceGroupWrapper').style.display = 'none';
+            document.getElementById('callBackOtherGroupWrapper').style.display = 'none';
+            document.getElementById('travelComplianceSection').style.display = 'none';
+            
+            // Re-initialize default visit date
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(9, 0, 0, 0);
+            const pad = n => n.toString().padStart(2, '0');
+            const localDateTime = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}T${pad(tomorrow.getHours())}:${pad(tomorrow.getMinutes())}`;
+            document.getElementById('visitRequested').value = localDateTime;
+
             form.style.display = 'block';
             successMessage.classList.remove('visible');
           }, 5000);
@@ -670,11 +1306,12 @@
       }
     });
 
-    updateCategories();
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(9, 0, 0, 0);
-    document.getElementById('visitRequested').value = tomorrow.toISOString().slice(0, 16);
+    const pad = n => n.toString().padStart(2, '0');
+    const localDateTime = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}T${pad(tomorrow.getHours())}:${pad(tomorrow.getMinutes())}`;
+    document.getElementById('visitRequested').value = localDateTime;
   </script>
 </body>
 </html>

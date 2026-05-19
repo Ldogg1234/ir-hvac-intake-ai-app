@@ -100,8 +100,8 @@ When `Residential Insurance` or `Commercial Insurance` is selected:
 - If PM found:
   - Auto-populate: `company_name`, `pm_email`, `pm_cell`, `billing_address`
   - Display confirmation: *"System shows you are with [Company Name]. Is this still correct?"*
-- If PM is new: Allow manual entry, save to database on submit
-- If user modifies Company/Billing info: Trigger UPDATE on `project_managers`
+- **Robust PM Record Management**: Relaxed email requirements for PMs. If you edit a PM's auto-populated info (like changing an email or phone number), the system intelligently identifies the existing record by Name + Company and updates it, preventing duplicate entries.
+DATE on `project_managers`
 
 ### 4. Claim Type Filter (Insurance Only)
 - **Field 4**: `claim_type` (Select)
@@ -175,23 +175,22 @@ ELSE IF job_type IN ('Res_Insurance', 'Comm_Insurance'):
 
 ### Upsert Logic (Insurance Jobs)
 ```sql
-INSERT INTO project_managers (pm_id, full_name, company_name, email, cell_phone, billing_address, last_updated)
-VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, NOW())
-ON CONFLICT (email) DO UPDATE SET
-    full_name = EXCLUDED.full_name,
-    company_name = EXCLUDED.company_name,
-    cell_phone = EXCLUDED.cell_phone,
-    billing_address = EXCLUDED.billing_address,
-    last_updated = NOW();
+-- Logic: 
+-- 1. Try to find existing PM by email (highest confidence link).
+-- 2. If not found, try to find by (full_name, company_name) as a fallback.
+-- 3. If found in either case, UPDATE the record with new info (allows updating emails).
+-- 4. If not found at all, INSERT a new record.
+-- This ensures PMs are tracked even without emails, and existing records are updated if info changes.
 ```
 
 ### Drive Folder Naming
 ```
-[Property Address]_[PM Name]
+[PM Name]_[Property Address]
 ├── Videos/
-└── Photos/
+├── Photos/
+└── Purchase Orders/
 ```
-- For non-insurance jobs without PM: `[Property Address]_[Client Name]`
+- For non-insurance jobs without PM: `[Client Name]_[Property Address]`
 
 ---
 
@@ -301,10 +300,21 @@ Automated QBO sync triggered by Firestore document creation:
 - **Custom Field 3 (Project Manager)**: `pm.full_name`
 - **Custom Field 4 (Technician)**: Updated via calendar sync
 
+### QBO TimeActivity — Automatic Drive/Labor Time Tracking
+The system automatically creates and manages QBO TimeActivities for each lead:
+- **Drive Time**: Created when tech taps "Start Navigation" (`techStartNavigation`). Linked to QBO Project via `CustomerRef`. Uses `findOrCreateNamedServiceItem('Drive Time')` to resolve/create the QBO Service Item.
+- **Labor Time**: Created when tech enters geofence (`techClockIn`). Drive Time is stopped (end = now) and Labor Time starts simultaneously. Uses `findOrCreateNamedServiceItem('Labor Time')`.
+- **Report Submission**: Labor Time is stopped when the tech submits their report (`techSubmitReport`).
+- All TimeActivities use `NameOf: 'Other'` with `OtherName` = tech name, and `ItemRef` = the service item.
+- Activity IDs and SyncTokens are stored in Firestore (`drive_time_activity_id`, `labor_time_activity_id`) for update operations.
+
 ### Firestore Collections
-- `leads/{leadId}` — Lead data + QBO IDs (`qbo_customer_id`, `qbo_project_id`, `qbo_estimate_id`)
+- `leads/{leadId}` — Lead data + QBO IDs (`qbo_customer_id`, `qbo_project_id`, `qbo_estimate_id`) + time tracking fields (`drive_start_time`, `drive_end_time`, `labor_start_time`, `drive_time_activity_id`, `labor_time_activity_id`)
 - `qbo_tokens/primary` — OAuth access/refresh tokens (server-side only)
 - `pms/{pmId}` — PM autocomplete cache
+- `price_book/{itemId}` — Standard services, prices, and descriptions.
+- `estimates/{estimateId}` — Bespoke estimates. Contains nested collection `line_items`. Status tracks `draft`, `sent_to_client`, `partially_approved`, `approved`.
+- `invoices/{invoiceId}` — Finalized invoices for finished work.
 
 ---
 
@@ -313,7 +323,7 @@ Automated QBO sync triggered by Firestore document creation:
 ir-hvac-intake-ai/
 ├── functions/
 │   ├── src/
-│   │   ├── index.ts              # Cloud Functions entry point (13 exports)
+│   │   ├── index.ts              # Cloud Functions entry point (16 exports)
 │   │   ├── config/
 │   │   │   └── index.ts          # Environment config + secrets
 │   │   ├── services/
@@ -327,6 +337,7 @@ ir-hvac-intake-ai/
 │   │   │   └── vision.ts         # Vision API
 │   │   ├── handlers/
 │   │   │   ├── lead-intake.ts    # Main intake workflow (+ Firestore write)
+│   │   │   ├── lead-lifecycle.ts # Status machine + Drive/Labor Time + Code Red
 │   │   │   └── qbo-sync.ts       # QBO sync + calendar tech detection
 │   │   ├── types/
 │   │   │   └── index.ts          # TypeScript interfaces

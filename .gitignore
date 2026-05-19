@@ -13,6 +13,7 @@ functions/lib/
 # Environment / secrets
 .env
 .env.local
+functions/.env
 
 # Service account keys — NEVER commit
 service-account-key.json
@@ -28,3 +29,6 @@ build/
 .packages
 *.iml
 local.properties
+
+# Firebase Deployment Key
+firebase-deploy-key.json

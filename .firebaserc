@@ -10,9 +10,18 @@
         ],
         "app": [
           "imr-tech-report-b18b8"
+        ],
+        "cash-flow": [
+          "hvac-cash-flow-portal"
         ]
       }
     }
   },
-  "etags": {}
+  "etags": {
+    "immediate-response-ai-b18b8": {
+      "extensionInstances": {
+        "firestore-bigquery-export": "3a635cf8cbab153750a4b4b567a0584489f56132773d5e6540562a3a74cb5a00"
+      }
+    }
+  }
 }

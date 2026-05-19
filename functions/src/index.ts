@@ -495,6 +495,38 @@ export const getProfessionalReport = onCall(
   }
 );
 
+/**
+ * Firebase Callable: Email Tyler Transcript
+ */
+export const emailTylerTranscript = onCall(
+  {
+    region: 'us-central1',
+    timeoutSeconds: 60,
+    memory: '256MiB',
+    secrets: [gmailServiceAccountKey],
+  },
+  async (request) => {
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'You must be signed in');
+    }
+
+    const { htmlTranscript } = request.data || {};
+    if (!htmlTranscript) {
+      throw new HttpsError('invalid-argument', 'htmlTranscript is required');
+    }
+
+    try {
+      const { handleEmailTylerTranscript } = await import('./handlers/live-assistant');
+      const email = request.auth.token.email || 'dispatch@immediateresponsehvac.ca';
+      const result = await handleEmailTylerTranscript(request.data, email);
+      return result;
+    } catch (error: any) {
+      console.error('Email transcript error:', error);
+      throw new HttpsError('internal', error?.message || 'Failed to email transcript');
+    }
+  }
+);
+
 // ============================================
 // QBO Integration Functions
 // ============================================
@@ -594,5 +626,67 @@ export const syncCalendarTechnicians = onSchedule(
     console.log(
       `syncCalendarTechnicians: ${result.processed} processed, ${result.updated} updated, ${result.errors} errors`
     );
+  }
+);
+
+// Gemini Live MVP
+export { geminiLiveStreamMvp } from './handlers/gemini-live-stream';
+
+// LiDAR Scan PDF Report Generation
+export { generatePdfReport } from './handlers/generate-pdf-report';
+
+// AI Knowledge Base Ingestion Jobs
+import { runYouTubeIngestJob } from './handlers/youtube-ingest-job';
+import { runManualIngestJob } from './handlers/manual-ingest-job';
+import { runDailyIngestReport, runWeeklyIngestReport, runMonthlyIngestReport } from './handlers/daily-ingest-report';
+
+export const youtubeIngestJob = onSchedule(
+  {
+    schedule: '0 */4 * * *', // Every 4 hours
+    timeoutSeconds: 540,
+    secrets: ['YOUTUBE_API_KEY'],
+  },
+  async () => {
+    await runYouTubeIngestJob();
+  }
+);
+
+export const manualIngestJob = onSchedule(
+  {
+    schedule: '30 */4 * * *', // Every 4 hours at minute 30
+    timeoutSeconds: 540,
+  },
+  async () => {
+    await runManualIngestJob();
+  }
+);
+
+export const dailyIngestReportJob = onSchedule(
+  {
+    schedule: '0 5 * * *', // Every day at 5:00 AM
+    timeoutSeconds: 300,
+  },
+  async () => {
+    await runDailyIngestReport();
+  }
+);
+
+export const weeklyIngestReportJob = onSchedule(
+  {
+    schedule: '0 6 * * 1', // Every Monday at 6:00 AM
+    timeoutSeconds: 300,
+  },
+  async () => {
+    await runWeeklyIngestReport();
+  }
+);
+
+export const monthlyIngestReportJob = onSchedule(
+  {
+    schedule: '0 7 1 * *', // 1st day of every month at 7:00 AM
+    timeoutSeconds: 300,
+  },
+  async () => {
+    await runMonthlyIngestReport();
   }
 );

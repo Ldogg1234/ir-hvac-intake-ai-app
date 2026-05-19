@@ -5,13 +5,13 @@
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app requires access to Speech Recognition to allow technicians to dictate notes.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app requires access to the microphone to dictact notes.</string>
+	<string>This app requires access to the microphone for talking to the Gemini AI guide live.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app requires camera access to attach photos of equipment to the reports.</string>
+	<string>This app requires camera access for HVAC furnace area &amp; duct line LiDAR mapping.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires photo library access to attach saved photos to the reports.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs your location to automatically tag reports with the job site.</string>
+	<string>This app needs your location for tracking structural distance compliance.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs your location to automatically tag reports with the job site.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
@@ -19,7 +19,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Intake App</string>
+	<string>IR Tech App</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -77,6 +77,11 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>fetch</string>
 	</array>
 </dict>
 </plist>

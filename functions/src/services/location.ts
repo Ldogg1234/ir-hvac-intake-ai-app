@@ -27,6 +27,9 @@ export interface ProximityResult {
 // Geocoding
 // ============================================
 
+export const WHITBY_HQ_COORDS: LatLng = { lat: 43.8860, lng: -78.9181 };
+
+
 const GEOCODING_BASE = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 /**
@@ -36,7 +39,7 @@ const GEOCODING_BASE = 'https://maps.googleapis.com/maps/api/geocode/json';
  * @returns Coordinates of the first geocoding result
  * @throws If the API returns no results or an error status
  */
-export async function geocodeAddress(address: string): Promise<LatLng> {
+export async function geocodeAddress(address: string): Promise<{ lat: number, lng: number, formattedAddress: string }> {
   const apiKey = config.googleMaps.apiKey;
   if (!apiKey) {
     throw new Error('GOOGLE_MAPS_API_KEY is not configured');
@@ -46,7 +49,7 @@ export async function geocodeAddress(address: string): Promise<LatLng> {
   const response = await fetch(url);
   const data = (await response.json()) as {
     status: string;
-    results: { geometry: { location: { lat: number; lng: number } } }[];
+    results: { formatted_address: string; geometry: { location: { lat: number; lng: number } } }[];
   };
 
   if (data.status !== 'OK' || !data.results.length) {
@@ -54,8 +57,32 @@ export async function geocodeAddress(address: string): Promise<LatLng> {
   }
 
   const loc = data.results[0].geometry.location;
-  console.log(`[Location] Geocoded "${address}" → ${loc.lat}, ${loc.lng}`);
-  return { lat: loc.lat, lng: loc.lng };
+  const formattedAddress = data.results[0].formatted_address;
+  console.log(`[Location] Geocoded "${address}" → ${formattedAddress} (${loc.lat}, ${loc.lng})`);
+  return { lat: loc.lat, lng: loc.lng, formattedAddress };
+}
+
+/**
+ * Fetch address autocomplete suggestions via the Google Places Autocomplete API.
+ *
+ * @param query - The user's input string
+ * @returns Array of prediction objects
+ */
+export async function fetchAutocompleteSuggestions(query: string): Promise<any[]> {
+  const apiKey = config.googleMaps.apiKey;
+  if (!apiKey) {
+    throw new Error('GOOGLE_MAPS_API_KEY is not configured');
+  }
+
+  const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&components=country:ca|country:us&key=${apiKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
+    console.warn(`[Location] Autocomplete failed for "${query}": ${data.status}`, data.error_message || '');
+  }
+
+  return data.predictions || [];
 }
 
 // ============================================
@@ -138,4 +165,30 @@ export function generateClockInUrl(propertyAddress: string): string {
   const base = config.googleMaps.clockInBaseUrl;
   const encoded = encodeURIComponent(propertyAddress);
   return `${base}/clock-in?address=${encoded}`;
+}
+
+// ============================================
+// Travel Compliance
+// ============================================
+
+/**
+ * Check if the target address is more than 80km from the Whitby HQ.
+ */
+export async function checkTravelCompliance(propertyAddress: string): Promise<{ isSpecialWorkSite: boolean; distanceMetres: number }> {
+  try {
+    const targetCoords = await geocodeAddress(propertyAddress);
+    const distanceMetres = haversineDistance(WHITBY_HQ_COORDS, targetCoords);
+    const isSpecialWorkSite = distanceMetres > 80000;
+    
+    console.log(
+      `[Location] Travel Compliance for "${propertyAddress}": ` +
+      `${(distanceMetres / 1000).toFixed(2)} km from HQ. Special Site: ${isSpecialWorkSite}`
+    );
+    
+    return { isSpecialWorkSite, distanceMetres };
+  } catch (error) {
+    console.error(`[Location] Failed to check travel compliance for ${propertyAddress}:`, error);
+    // Fail closed: if we can't geocode, don't trigger the special work site workflow
+    return { isSpecialWorkSite: false, distanceMetres: 0 };
+  }
 }

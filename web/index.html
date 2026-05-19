@@ -20,6 +20,9 @@
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -30,23 +33,145 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png" />
 
-  <title>intake_app</title>
+  <title>Immediate Response</title>
   <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
+
   <script>
-    window.addEventListener('load', function (ev) {
-      // Disable the service worker to prevent blank screen caching issues
-      _flutter.loader.load({
-        serviceWorkerSettings: null,
-        config: {
-          renderer: 'html',
-        },
+    var firebaseConfig = {
+      apiKey: "AIzaSyDDh5jo-jKZsMxaEsVIJXiHMlViCYwcBWo",
+      appId: "1:406471533341:web:852308dc25fcbce42eb7f4",
+      messagingSenderId: "406471533341",
+      projectId: "immediate-response-ai-b18b8",
+      authDomain: "immediate-response-ai-b18b8.firebaseapp.com",
+      storageBucket: "immediate-response-ai-b18b8.firebasestorage.app",
+      measurementId: "G-BJYW5VDRN9"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('firebase-messaging-sw.js');
       });
-    });
+    }
   </script>
-  <script src="flutter_bootstrap.js?v=fresh_build" async></script>
+  <script>
+    let audioContext;
+    let mediaStream;
+    let processor;
+
+    window.startPcmAudioRecording = async function(dartCallback) {
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+        const source = audioContext.createMediaStreamSource(mediaStream);
+        
+        processor = audioContext.createScriptProcessor(4096, 1, 1);
+        
+        source.connect(processor);
+        processor.connect(audioContext.destination);
+        
+        processor.onaudioprocess = function(e) {
+          const float32Array = e.inputBuffer.getChannelData(0);
+          const int16Array = new Int16Array(float32Array.length);
+          let maxAmplitude = 0;
+          for (let i = 0; i < float32Array.length; i++) {
+            let s = float32Array[i];
+            let abs_s = Math.abs(s);
+            if (abs_s > maxAmplitude) {
+              maxAmplitude = abs_s;
+            }
+            s = Math.max(-1, Math.min(1, s));
+            int16Array[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+          }
+          
+          if (maxAmplitude < 0.01) {
+            console.warn("⚠️ JS Audio Input is completely silent (all zeros)");
+          } else {
+            console.log("🎙️ Sending audio chunk, max amplitude: " + maxAmplitude);
+          }
+
+          const buffer = new Uint8Array(int16Array.buffer);
+          let binary = '';
+          for (let i = 0; i < buffer.byteLength; i++) {
+            binary += String.fromCharCode(buffer[i]);
+          }
+          const base64String = window.btoa(binary);
+          dartCallback(base64String);
+        };
+      } catch (e) {
+        console.error('Audio capture failed:', e);
+      }
+    };
+
+    window.stopPcmAudioRecording = function() {
+      if (processor) {
+        processor.disconnect();
+        processor = null;
+      }
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+      }
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+      }
+    };
+
+    let playbackAudioContext;
+    let nextPlaybackTime = 0;
+
+    window.playIncomingPcmChunk = function(base64Audio) {
+      if (!playbackAudioContext) {
+        playbackAudioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+      }
+      
+      const binaryString = window.atob(base64Audio);
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      
+      const int16Array = new Int16Array(bytes.buffer);
+      const float32Array = new Float32Array(int16Array.length);
+      for (let i = 0; i < int16Array.length; i++) {
+        float32Array[i] = int16Array[i] / 32768.0;
+      }
+      
+      const audioBuffer = playbackAudioContext.createBuffer(1, float32Array.length, 24000);
+      audioBuffer.getChannelData(0).set(float32Array);
+      
+      const source = playbackAudioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(playbackAudioContext.destination);
+      
+      const currentTime = playbackAudioContext.currentTime;
+      if (nextPlaybackTime < currentTime) {
+        // Increase jitter buffer to 300ms to handle network latency and prevent choppy audio
+        nextPlaybackTime = currentTime + 0.3; 
+      }
+      
+      source.start(nextPlaybackTime);
+      nextPlaybackTime += audioBuffer.duration;
+    };
+
+    window.stopPcmPlayback = function() {
+      if (playbackAudioContext) {
+        playbackAudioContext.close();
+        playbackAudioContext = null;
+        nextPlaybackTime = 0;
+      }
+    };
+  </script>
+  <script src="flutter_bootstrap.js?v=2" async></script>
 </body>
 
 </html>

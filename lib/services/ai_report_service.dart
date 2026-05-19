@@ -52,7 +52,7 @@ class AiReportService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   late final GenerativeModel _model = GenerativeModel(
-    model: 'gemini-1.5-pro',
+    model: 'gemini-2.5-flash',
     apiKey: _apiKey,
     generationConfig: GenerationConfig(
       responseMimeType: 'application/json',

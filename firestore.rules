@@ -1,27 +1,101 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // PMs collection - authenticated users from immediateresponsehvac.ca domain can read/write
+
+    // --- HELPER FUNCTIONS ---
+
+    // Check if the user is logged in and belongs to the correct Tenant
+    function isTenant(tenantId) {
+      return request.auth != null && request.auth.token.tenantId == tenantId;
+    }
+
+    // Check if the user is authenticated at all
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // --- COLLECTION RULES ---
+
+    // 1. Private Tenant Data (The Silos)
+    // Jobs, Customers, and Equipment require a matching tenantId
+    match /jobs/{jobId} {
+      allow read, delete: if isTenant(resource.data.tenantId);
+      allow create: if isTenant(request.resource.data.tenantId);
+      allow update: if isTenant(resource.data.tenantId) && isTenant(request.resource.data.tenantId);
+    }
+
+    match /customers/{customerId} {
+      allow read, delete: if isTenant(resource.data.tenantId);
+      allow create: if isTenant(request.resource.data.tenantId);
+      allow update: if isTenant(resource.data.tenantId) && isTenant(request.resource.data.tenantId);
+    }
+
+    match /equipment/{equipId} {
+      allow read, delete: if isTenant(resource.data.tenantId);
+      allow create: if isTenant(request.resource.data.tenantId);
+      allow update: if isTenant(resource.data.tenantId) && isTenant(request.resource.data.tenantId);
+    }
+
+    // 2. The Global Knowledge Sub-system (The Brain)
+    // All techs can read these to get help, but only the Backend Admin can write to them
+    match /global_diagnostics/{insightId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Admin SDK only
+    }
+
+    match /manuals/{manualId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Admin SDK only
+    }
+
+    // 3. Tenant Profiles (For White-Labeling)
+    // Allow techs to read their own company's logo and info
+    match /tenants/{tenantId} {
+      allow read: if isTenant(tenantId);
+      allow write: if false; // Managed via your Admin Portal only
+    }
+
+    // 4. Project Managers (Insurance Jobs)
+    // Shared resource for all techs to allow autocomplete and upsert
     match /pms/{pmId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /system_settings/{document=**} {
+      // Allow read/write for specific administrators
       allow read, write: if request.auth != null && 
-        request.auth.token.email.matches('.*@immediateresponsehvac[.]ca$');
+        (request.auth.token.email == 'admin@immediateresponsehvac.ca' || 
+         request.auth.token.email == 'nicole@immediateresponsehvac.ca' || 
+         request.auth.token.email == 'tdear@immediateresponsehvac.ca');
     }
 
-    // Leads collection - company domain can read, server-side writes only (Admin SDK)
+    match /onboarding_queue/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // 5. Leads, Reports, Estimates, and Invoices
     match /leads/{leadId} {
-      allow read: if request.auth != null && 
-        request.auth.token.email.matches('.*@immediateresponsehvac[.]ca$');
-      allow write: if false; // Only written by Cloud Functions via Admin SDK
+      allow read, write: if isAuthenticated();
+      
+      match /scans/{scanId} {
+        allow read, write: if isAuthenticated();
+      }
     }
 
-    // QBO tokens - no client access, server-side only (Admin SDK)
-    match /qbo_tokens/{doc} {
-      allow read, write: if false;
+    match /reports/{reportId} {
+      allow read, write: if isAuthenticated();
     }
     
-    // Default deny all other collections
-    match /{document=**} {
-      allow read, write: if false;
+    match /estimates/{estimateId} {
+      allow read, write: if isAuthenticated();
+      
+      match /line_items/{itemId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+    
+    match /invoices/{invoiceId} {
+      allow read, write: if isAuthenticated();
     }
   }
 }

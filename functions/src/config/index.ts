@@ -6,9 +6,6 @@
 import { defineString, defineSecret } from 'firebase-functions/params';
 
 // Define Firebase params for environment variables
-const alloydbConnectionName = defineString('ALLOYDB_CONNECTION_NAME');
-const alloydbDbName = defineString('ALLOYDB_DB_NAME');
-const alloydbUser = defineString('ALLOYDB_USER');
 const alloydbPassword = defineSecret('ALLOYDB_PASSWORD');
 const gmailServiceAccountKey = defineSecret('GMAIL_SERVICE_ACCOUNT_KEY');
 const qboClientId = defineSecret('QBO_CLIENT_ID');
@@ -23,6 +20,22 @@ const clockInBaseUrl = defineString('CLOCK_IN_BASE_URL');
 /**
  * Application configuration
  */
+export function getQboConfig() {
+  const clientId = qboClientId.value() || process.env.QBO_CLIENT_ID;
+  const clientSecret = qboClientSecret.value() || process.env.QBO_CLIENT_SECRET;
+  const realmId = qboRealmId.value() || process.env.QBO_REALM_ID;
+
+  if (!clientId || !clientSecret) {
+    throw new Error('QBO credentials not fully configured');
+  }
+
+  if (!realmId) {
+    throw new Error('QBO_REALM_ID not set');
+  }
+
+  return { clientId, clientSecret, realmId };
+}
+
 export const config = {
   // Google Cloud Project
   gcp: {
@@ -31,26 +44,18 @@ export const config = {
     },
   },
 
-  // AlloyDB AI Configuration
-  alloydb: {
-    get connectionName(): string {
-      return alloydbConnectionName.value() || process.env.ALLOYDB_CONNECTION_NAME || '';
-    },
-    get dbName(): string {
-      return alloydbDbName.value() || process.env.ALLOYDB_DB_NAME || '';
-    },
-    get user(): string {
-      return alloydbUser.value() || process.env.ALLOYDB_USER || '';
-    },
-    get password(): string {
-      return alloydbPassword.value() || process.env.ALLOYDB_PASSWORD || '';
-    },
-  },
-
   // Google Drive Configuration
   googleDrive: {
     get parentFolderId(): string {
       return driveparentFolderId.value() || process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID || '';
+    },
+    masterJobHistoryFolderId: '1EfawqR0hsLnpI2ZkgWM3SBRHXOaR6xlj',
+  },
+
+  // Google Docs Configuration
+  googleDocs: {
+    get templateId(): string {
+      return process.env.GOOGLE_DOC_TEMPLATE_ID || '';
     },
   },
 
@@ -60,7 +65,7 @@ export const config = {
       return ghostCalendarId.value() || process.env.GHOST_CALENDAR_ID || 'c_82f31464fae8eeb8fd1cee1af6675655ffc9456594b656b049cc061323199f35@group.calendar.google.com';
     },
     defaultEventDurationHours: 2,
-    defaultTimezone: 'America/Edmonton',
+    defaultTimezone: 'America/Toronto',
   },
 
   // Google Maps / Location Services
@@ -74,6 +79,13 @@ export const config = {
     },
     /** Maximum distance (metres) a tech can be from the site to clock in */
     proximityThresholdMetres: 200,
+  },
+
+  // Google AI / Gemini Configuration
+  googleAI: {
+    get apiKey(): string {
+      return 'AIzaSyDDh5jo-jKZsMxaEsVIJXiHMlViCYwcBWo';
+    },
   },
 
   // Office / company address (used for email footer)
@@ -95,13 +107,13 @@ export const config = {
     OTHER: 'Other',
   } as const,
 
-  // Lead Status Enum
+  // Lead Status Enum (matches project_blueprint.md state machine)
   leadStatuses: {
-    NEW: 'new',
+    INTAKE: 'intake',
     SCHEDULED: 'scheduled',
-    IN_PROGRESS: 'in_progress',
-    COMPLETED: 'completed',
-    CANCELLED: 'cancelled',
+    IN_PROGRESS: 'in-progress',
+    REPORT_SUBMITTED: 'report-submitted',
+    INVOICED: 'invoiced',
   } as const,
 
   // Access Instructions Enum
